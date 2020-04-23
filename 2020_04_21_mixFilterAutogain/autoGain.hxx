@@ -65,7 +65,7 @@ namespace DSP{
 				for(uint o = 0; o < autogainFactor[t].length; ++o)
 					for(uint c = 0; c < autogainFactor[t][o].length; ++c){
 						double cutoff = double(c) / double(autogainFactor[t][o].length);
-						autogainFactor[t][o][c] = rms / getRMSFor(cutoff, o + 1, t, buffer, size);
+						autogainFactor[t][o][c] = getRMSRatio(rms, getRMSFor(cutoff, o + 1, t, buffer, size));
 					}
 		}
 		
@@ -82,7 +82,7 @@ namespace DSP{
 			}
 		}
 		
-		private double getAutogainFactor(double rms, double rmsFilter){ return rms / rmsFilter; }
+		private double getRMSRatio(double rms, double rmsFilter){ return rms / rmsFilter; }
 		
 		private double getRMSFor(float cutoff, int order, int type, array<double> buffer, double& size){
 			/*
@@ -147,6 +147,6 @@ namespace DSP{
 				}
 			}
 		return !isUNC;
-}
+		}
 	}
 }
