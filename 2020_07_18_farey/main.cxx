@@ -7,11 +7,12 @@ array<string> inputParametersNames = { "Order" };
 array<string> inputParametersUnits = {};
 array<string> inputParametersEnums = {};
 array<double> inputParameters( inputParametersNames.length );
-array<int> inputParametersSteps = { 32 };
+array<int> inputParametersSteps = { maxOrder };
 array<double> inputParametersMin = { 1 };
-array<double> inputParametersMax = { 32 };
+array<double> inputParametersMax = { maxOrder };
 
-hdl::Farey farey;
+int maxOrder = 16;
+hdl::Farey farey(maxOrder);
 int order = -1;
 
 void processBlock(BlockData& data) {

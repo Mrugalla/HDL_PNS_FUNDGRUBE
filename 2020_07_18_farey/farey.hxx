@@ -1,11 +1,16 @@
 namespace hdl {
 	class Farey {
-		void setOrder(int o) {
-			order = o;
-			sequence.length = o;
-			for(int s = 0; s < order; ++s)
-				sequence[s] = 1. / double(s + 2);
+		Farey(int maxOrder){
+			sequence.length = maxOrder;
+			double x = 1. / 2.;
+			sequence[0] = x;
+			for(int i = 1; i < maxOrder; ++i){
+				x /= 2.;
+				sequence[i] = x;
+			}
 		}
+		
+		void setOrder(int o) { order = o; }
 		
 		double process(double sample) {
 			double y = 0.;
