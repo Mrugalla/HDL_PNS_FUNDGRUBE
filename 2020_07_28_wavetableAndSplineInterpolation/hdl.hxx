@@ -19,7 +19,7 @@ namespace hdl {
 	}
 	
 	class Osc {
-		void setFreq(double f){ inc = f * wt.size() * FsInc; }
+		void setFreq(double f){ inc = f * wt.size() * FsInv; }
 		
 		double process() {
 			double wave = getSample();
@@ -32,7 +32,7 @@ namespace hdl {
 		double getSample(){ return wt.data[int(idx)]; }
 		
 		Wavetable wt(32);
-		double FsInc = 1. / sampleRate;
+		double FsInv = 1. / sampleRate;
 		double idx, inc;
 	}
 	
