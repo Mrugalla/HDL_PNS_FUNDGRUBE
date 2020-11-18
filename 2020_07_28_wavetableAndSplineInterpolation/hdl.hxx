@@ -82,12 +82,13 @@ namespace hdl {
 				i4 -= wt.size();
 			
 			double iFrac = idx - i2;
+			double splIdx = int(iFrac * splineSize);
 			
 			double y = 0.;
-			y += wt.data[i1] * y1[int(splineSize * iFrac)];
-			y += wt.data[i2] * y2[int(splineSize * iFrac)];
-			y += wt.data[i3] * y3[int(splineSize * iFrac)];
-			y += wt.data[i4] * y4[int(splineSize * iFrac)];
+			y += wt.data[i1] * y1[splIdx];
+			y += wt.data[i2] * y2[splIdx];
+			y += wt.data[i3] * y3[splIdx];
+			y += wt.data[i4] * y4[splIdx];
 			
 			return y;
 		}
