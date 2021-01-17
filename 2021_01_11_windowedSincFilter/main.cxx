@@ -114,7 +114,7 @@ IR makeSincFilter(double Fs, double fc, double bw) {
 		int i = n - latency;
 		if(i != 0)
 			h[n] *= sinc(n - latency, fc2); // apply sinc function
-		else h[n] *= fc2; // this is still wrong
+		else h[n] *= fc2;
 	}
 	
 	double sum = 0; // normalize
