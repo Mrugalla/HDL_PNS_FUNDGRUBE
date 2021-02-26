@@ -17,7 +17,7 @@ void processBlock(BlockData& data) {
 	
 	for(uint s = 0; s < data.samplesToProcess; ++s) {
 		
-		for(uint ch = 0; ch < audioInputsCount; ++ch){
+		for(uint ch = 0; ch < audioOutputsCount; ++ch){
 			
 		}
 	}
