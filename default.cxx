@@ -9,27 +9,24 @@ array<int> inputParametersSteps = {};
 array<double> inputParametersMin = {};
 array<double> inputParametersMax = {};
 
-double tau = 6.28318530718;
-double pi = tau / 2;
+const double tau = 6.28318530718;
+const double pi = tau / 2;
 
 void processBlock(BlockData& data) {
 	processParameters();
 	
-	for(uint s = 0; s < data.samplesToProcess; ++s) {
-		
-		for(uint ch = 0; ch < audioOutputsCount; ++ch){
+	for(uint ch = 0; ch < audioOutputsCount; ++ch) {
+		for(uint s = 0; s < data.samplesToProcess; ++s) {
 			
 		}
 	}
-		
 }
 
 void processParameters() {
 	
 }
 
-int rint(double d) {
-    if(d < 0)
-        return int(d - .5);
-    return int(d + .5);
+double rint(double d) {
+    if(d < 0.) return floor(d - .5);
+    return floor(d + .5);
 }
