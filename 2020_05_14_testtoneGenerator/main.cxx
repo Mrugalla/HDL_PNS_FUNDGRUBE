@@ -25,8 +25,13 @@ Osc osc;
 void initialize(){
 }
 
-void processBlock(BlockData& data){
-	for(uint i = 0; i < data.samplesToProcess; i++){
+void processBlock(BlockData& data)
+{
+	if(!data.transport.get_isPlaying())
+		return;
+	
+	for(uint i = 0; i < data.samplesToProcess; i++)
+	{
 		osc.process();
 		double wave = 0.;
 		for(uint h = 0; h < 8; ++h)
