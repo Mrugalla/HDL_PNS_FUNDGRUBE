@@ -3,12 +3,12 @@ string description="xy";
 
 array<double> inputParameters(inputParametersNames.length);
 
-array<string>  inputParametersNames=	{ "smoothType", "dly", "smoothLen" };
-array<string>  inputParametersUnits=	{ "", "", "ms" };
-array<string>  inputParametersEnums=	{ "noSmooth;block;linear;lp1x;lp2x" };
-array<double> inputParametersMin=		{ 0., 0., 1. };
-array<double> inputParametersMax=		{ 4., 1., 120. };
-array<int> inputParametersSteps=		{ 5, -1, -1 };
+array<string>  inputParametersNames=	{ "smooth1", "smooth2", "dly", "smoothLen" };
+array<string>  inputParametersUnits=	{ "", "", "", "ms" };
+array<string>  inputParametersEnums=	{ "noSmooth;block;linear;lp1x;lp2x", "noSmooth;linear;lp1x;lp2x" };
+array<double> inputParametersMin=		{ 0., 0., 0., 1. };
+array<double> inputParametersMax=		{ 4., 3., 1., 120. };
+array<int> inputParametersSteps=		{ 5,  4, -1, -1 };
 
 const float pi = 3.14159265359f;
 const float tau = pi * 2.f;
@@ -16,8 +16,9 @@ const float tau = pi * 2.f;
 array<double> rateBuffer(maxBlockSize);
 
 smooth::Block delaySmoothBlock;
-smooth::Linear delaySmoothLin;
+smooth::Linear delaySmoothLin, delaySmoothLin2;
 smooth::Lowpass delaySmoothLP, delaySmoothLP2x;
+smooth::Lowpass delaySmoothLP2, delaySmoothLP2x2;
 
 const int delaySize = int(sampleRate * .1);
 dsp::WHead wHead;
@@ -35,11 +36,12 @@ void processBlock(BlockData& data)
 {
 	uint numSamples = data.samplesToProcess;
 	
-	double rate = inputParameters[1] * double(delaySize - 1);
-	double smoothLen = math::msToSamples(inputParameters[2]);
-	int smoothType = int(math::rint(inputParameters[0]));
+	int smoothType1 = int(math::rint(inputParameters[0]));
+	int smoothType2 = int(math::rint(inputParameters[1]));
+	double rate = inputParameters[2] * double(delaySize - 1);
+	double smoothLen = math::msToSamples(inputParameters[3]);
 
-	switch (smoothType)
+	switch (smoothType1)
 	{
 	case 0: // no smoothing
 		for (uint s = 0; s < numSamples; ++s)
@@ -61,6 +63,20 @@ void processBlock(BlockData& data)
 	default: // no smoothing
 		for(uint s = 0; s < numSamples; ++s)
 			rateBuffer[s] = rate;
+		break;
+	}
+	
+	switch (smoothType2)
+	{
+	case 1: // lin smoothing
+		delaySmoothLin2.process(rateBuffer, smoothLen, numSamples);
+		break;
+	case 2: // lowpass smoothing
+		delaySmoothLP2.process(rateBuffer, smoothLen, numSamples);
+		break;
+	case 3: // lowpass 2x smoothing
+		delaySmoothLP2.process(rateBuffer, smoothLen, numSamples);
+		delaySmoothLP2x2.process(rateBuffer, smoothLen, numSamples);
 		break;
 	}
 	
@@ -226,6 +242,36 @@ namespace smooth
 				if (phase > 1.) // current end value has been reached
 				{
 					if(x != end) // new end required
+					{
+						start = end;
+						end = x;
+						range = end - start;
+						phase = 0.;
+						inc = 1. / length;
+					}
+					else // no smoothing needed
+					{
+						start = end = x;
+						range = .5;
+						inc = 0.;
+						phase = 2.;
+					}
+				}
+
+				buffer[s] = start + phase * range;
+				phase += inc;
+			}
+		}
+
+		void process(array<double>& buffer, double length, uint numSamples)
+		{
+			for (uint s = 0; s < numSamples; ++s)
+			{
+				if (phase > 1.) // current end value has been reached
+				{
+					double x = buffer[s];
+
+					if (x != end) // new end required
 					{
 						start = end;
 						end = x;
