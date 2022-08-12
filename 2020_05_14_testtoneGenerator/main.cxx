@@ -2,8 +2,7 @@ string name = "xy";
 string description = "xy";
 
 /*
-a little test tone generator. i made this so i can test the behaviour of 
-fft algorithms but you can use it for whatever you want.
+a little test tone generator.
 */
 
 array<string> inputParametersNames = {"autogain", "osc freq", "osc0", "osc1", "osc2", "osc3", "osc4", "osc5", "osc6", "osc7", "masterGain"};
